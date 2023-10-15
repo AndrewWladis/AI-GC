@@ -30,7 +30,9 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
-    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    if (chatContainerRef.current != null) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
   }, [transcript]);
 
   const isMe = (message: any) => {
@@ -90,7 +92,7 @@ export default function Chat() {
           </div>
         ))}
       </div>
-      <div ref={chatContainerRef} className="flex-grow p-4 overflow-y-auto">
+      <div ref={chatContainerRef} className="flex-grow p-4 overflow-y-auto scroll-smooth">
         {transcript.map((message, index) => (
           <div
             key={index}
