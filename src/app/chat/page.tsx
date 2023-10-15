@@ -61,8 +61,13 @@ export default function Chat() {
 
       if (response.ok) {
         const result = await response.json();
-        const resArray = result.response.message.content.split('---').forEach((item: string) => item.trim());
-        console.log(resArray)
+        let resArray = result.response.message.content.split('---');
+        if (resArray.length > 1) {
+          resArray = resArray.forEach((item: string) => item.trim())
+        } else {
+          resArray[0] = resArray[0].trim()
+        }
+
         setTranscript([...transcript, `You: ${query}`, ...resArray]);
       } else {
         throw new Error(`Error calling your backend API: ${response.status}`);
