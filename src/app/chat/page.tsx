@@ -10,7 +10,7 @@ interface Person {
 }
 
 export default function Chat() {
-  const chatContainerRef = useRef(null);
+  const chatContainerRef = useRef<any>(null);
   const searchParams = useSearchParams();
   const people: Person[] = require('../people.json');
   const [transcript, setTranscript] = useState(['Start the conversation! Send a message!']);
@@ -61,7 +61,7 @@ export default function Chat() {
 
       if (response.ok) {
         const result = await response.json();
-        const resArray = result.response.message.content.split('---');
+        const resArray = result.response.message.content.split('---').forEach((item: string) => item.trim());
         console.log(resArray)
         setTranscript([...transcript, `You: ${query}`, ...resArray]);
       } else {
