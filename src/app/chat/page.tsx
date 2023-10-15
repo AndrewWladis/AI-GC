@@ -40,7 +40,7 @@ export default function Chat() {
       setQuery('');
       setIsLoading(true);
 
-      const response = await fetch('https://correct-boxd-backend.onrender.com/getChat', {
+      const response = await fetch('https://ai-l011.onrender.com/getChat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
