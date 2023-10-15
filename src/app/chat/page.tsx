@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface Person {
   id: number;
@@ -10,6 +10,7 @@ interface Person {
 }
 
 export default function Chat() {
+  const chatContainerRef = useRef(null);
   const searchParams = useSearchParams();
   const people: Person[] = require('../people.json');
   const [transcript, setTranscript] = useState(['Start the conversation! Send a message!']);
@@ -27,6 +28,10 @@ export default function Chat() {
       setMembers(peopleFromParams);
     }
   }, []);
+
+  useEffect(() => {
+    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+  }, [transcript]);
 
   const isMe = (message: any) => {
     if (typeof message === 'string') {
@@ -85,7 +90,7 @@ export default function Chat() {
           </div>
         ))}
       </div>
-      <div className="flex-grow p-4 overflow-y-auto">
+      <div ref={chatContainerRef} className="flex-grow p-4 overflow-y-auto">
         {transcript.map((message, index) => (
           <div
             key={index}
