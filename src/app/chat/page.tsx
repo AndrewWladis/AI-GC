@@ -40,7 +40,7 @@ export default function Chat() {
       setQuery('');
       setIsLoading(true);
 
-      const response = await fetch('https://ai-l011.onrender.com/getChat', {
+      const response = await fetch('https://poised-hen-leg-warmers.cyclic.app/getChat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
