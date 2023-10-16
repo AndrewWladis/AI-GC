@@ -12,21 +12,26 @@ interface Person {
 export default function Chat() {
   const chatContainerRef = useRef<any>(null);
   const searchParams = useSearchParams();
-  const people: Person[] = require('../people.json');
+  const [people, setPeople] = useState<Person[]>([]);
   const [transcript, setTranscript] = useState(['Start the conversation! Send a message!']);
   const [members, setMembers] = useState<Person[]>([]);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const params = searchParams.get('ids');
-    if (params != null) {
-      const peopleFromParams: Person[] = [];
-      params.toString().split(',').forEach((item) => {
-        peopleFromParams.push(people[Number(item)]);
-      });
-      setMembers(peopleFromParams);
-    }
+    fetch("https://poised-hen-leg-warmers.cyclic.app/people")
+    .then(data => data.json())
+    .then((data) => {
+      setPeople(data.people)
+      const params = searchParams.get('ids');
+      if (params != null) {
+        const peopleFromParams: Person[] = [];
+        params.toString().split(',').forEach((item) => {
+          peopleFromParams.push(data.people[Number(item)]);
+        });
+        setMembers(peopleFromParams);
+      }
+    })
   }, []);
 
   useEffect(() => {
@@ -62,12 +67,16 @@ export default function Chat() {
       if (response.ok) {
         const result = await response.json();
         let resArray = result.response.message.content.split('---');
+        console.log(resArray)
         if (resArray.length > 1) {
-          resArray = resArray.forEach((item: string) => item.trim())
+          resArray = resArray.map((item: string) => item.trim()).filter((item: string) => !item.startsWith('You:'));
         } else {
-          resArray[0] = resArray[0].trim()
+          resArray[0] = resArray[0].trim();
+          if (resArray[0].startsWith('You:')) {
+            resArray[0] = ''; // Remove the item if it starts with 'You:'
+          }
         }
-
+        console.log(resArray)
         setTranscript([...transcript, `You: ${query}`, ...resArray]);
       } else {
         throw new Error(`Error calling your backend API: ${response.status}`);
@@ -101,9 +110,8 @@ export default function Chat() {
         {transcript.map((message, index) => (
           <div
             key={index}
-            className={`rounded-lg p-2 text-white mb-4 self-${isMe(message) ? 'end' : 'start'} text-lg bg-${
-              isMe(message) ? 'blue-500' : 'gray-800'
-            }`}
+            className={`rounded-lg p-2 text-white mb-4 self-${isMe(message) ? 'end' : 'start'} text-lg bg-${isMe(message) ? 'blue-500' : 'gray-800'
+              }`}
           >
             {message}
           </div>
@@ -117,6 +125,7 @@ export default function Chat() {
           className="p-2 rounded-lg border bg-gray-800 text-white w-full"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onSubmit={handleSend}
         />
         {isLoading ? (
           <div className="ml-2 px-4 py-2 bg-blue-950 rounded-lg text-white">

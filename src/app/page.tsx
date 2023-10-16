@@ -10,12 +10,32 @@ interface Person {
 }
 
 export default function Home() {
-  const people: Person[] = require('./people.json');
+  const [people, setPeople] = useState<Person[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredPeople, setFilteredPeople] = useState(people);
+  const [filteredPeople, setFilteredPeople] = useState([{
+    "id": 0,
+    "name": "Sheldon Cooper",
+    "prompt": "Dr. Sheldon Cooper from the Big Bang Theory",
+    "photo": "https://global-uploads.webflow.com/63e413c214acc4a298a98a44/64953213452f345d3ffbecc5_Sheldon%20Cooper.jpg"
+  },
+  {
+    "id": 1,
+    "name": "Homelander",
+    "prompt": "Charismatic but ruthlessly manipulative leader of The Seven, Homelander exudes charm in public but has a cold, menacing demeanor in private conversations, often displaying an unnerving tendency to assert dominance through intense eye contact and a firm, authoritative tone",
+    "photo": "https://www.hollywoodinsider.com/wp-content/uploads/2020/10/Hollywood-Insider-The-Boys-Homelander.png"
+  }]);
   const [chatMembers, setChatMembers] = useState<Person[]>([]); // State to store chat members
   const router = useRouter();
   
+  useEffect(() => {
+    fetch("https://poised-hen-leg-warmers.cyclic.app/people")
+      .then(data => data.json())
+      .then((data) => {
+        setPeople(data.people)
+        setFilteredPeople(data.people)
+      })
+  }, [])
+
   useEffect(() => {
     const filtered = people.filter((person) =>
       person.name.toLowerCase().includes(searchQuery.toLowerCase())
