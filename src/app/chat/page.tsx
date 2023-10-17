@@ -22,12 +22,12 @@ export default function Chat() {
     fetch("https://poised-hen-leg-warmers.cyclic.app/people")
     .then(data => data.json())
     .then((data) => {
-      setPeople(data.people)
+      setPeople(data.people.reverse())
       const params = searchParams.get('ids');
       if (params != null) {
         const peopleFromParams: Person[] = [];
         params.toString().split(',').forEach((item) => {
-          peopleFromParams.push(data.people[Number(item)]);
+          peopleFromParams.push(data.people.reverse()[Number(item)]);
         });
         setMembers(peopleFromParams);
       }
