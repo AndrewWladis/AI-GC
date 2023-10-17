@@ -31,8 +31,8 @@ export default function Home() {
     fetch("https://poised-hen-leg-warmers.cyclic.app/people")
       .then(data => data.json())
       .then((data) => {
-        setPeople(data.people.reverse())
-        setFilteredPeople(data.people.reverse())
+        setPeople(data.people.reverse());
+        setFilteredPeople(data.people);
       })
   }, [])
 
