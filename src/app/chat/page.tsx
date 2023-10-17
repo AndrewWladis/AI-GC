@@ -12,6 +12,7 @@ interface Person {
 export default function Chat() {
   const chatContainerRef = useRef<any>(null);
   const searchParams = useSearchParams();
+  const [people, setPeople] = useState<Person[]>([]);
   const [transcript, setTranscript] = useState(['Start the conversation! Send a message!']);
   const [members, setMembers] = useState<Person[]>([]);
   const [query, setQuery] = useState('');
@@ -21,11 +22,12 @@ export default function Chat() {
     fetch("https://poised-hen-leg-warmers.cyclic.app/people")
     .then(data => data.json())
     .then((data) => {
+      setPeople(data.people)
       const params = searchParams.get('ids');
       if (params != null) {
         const peopleFromParams: Person[] = [];
         params.toString().split(',').forEach((item) => {
-          peopleFromParams.push(data.people.reverse()[Number(item)]);
+          peopleFromParams.push(data.people[Number(item)]);
         });
         setMembers(peopleFromParams);
       }
