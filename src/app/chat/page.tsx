@@ -73,7 +73,7 @@ export default function Chat() {
         } else {
           resArray[0] = resArray[0].trim();
           if (resArray[0].startsWith('You:')) {
-            resArray[0] = ''; // Remove the item if it starts with 'You:'
+            resArray.splice(0, 1); // Remove the item if it starts with 'You:'
           }
         }
         console.log(resArray)
